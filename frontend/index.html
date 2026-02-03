@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EDIP – Decision Impact Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      padding: 40px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 16px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+    .output {
+      margin-top: 20px;
+      background: #f0fdf4;
+      padding: 15px;
+      border-radius: 6px;
+      display: none;
+    }
+    .output p {
+      margin: 6px 0;
+    }
+    .risk {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Explainable Decision Impact Platform</h2>
+
+  <label>Industry</label>
+  <input type="text" id="industry" placeholder="e.g. IT Services" />
+
+  <label>Location</label>
+  <input type="text" id="location" placeholder="e.g. India" />
+
+  <label>Business Action</label>
+  <input type="text" id="action" placeholder="e.g. Collect user data" />
+
+  <button onclick="analyze()">Analyze Decision</button>
+
+  <div class="output" id="output">
+    <p><span class="risk">Risk Level:</span> <span id="risk"></span></p>
+    <p><strong>Regulation:</strong> <span id="regulation"></span></p>
+    <p><strong>Clause:</strong> <span id="clause"></span></p>
+    <p><strong>Explanation:</strong> <span id="explanation"></span></p>
+    <p><strong>Audit Note:</strong> <span id="audit"></span></p>
+  </div>
+</div>
+
+<script>
+  async function analyze() {
+    const industry = document.getElementById("industry").value;
+    const location = document.getElementById("location").value;
+    const action = document.getElementById("action").value;
+
+    const response = await fetch("http://127.0.0.1:8000/analyze-action", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        industry: industry,
+        location: location,
+        action: action
+      })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("risk").innerText = data.risk_level;
+    document.getElementById("regulation").innerText = data.regulation;
+    document.getElementById("clause").innerText = data.clause;
+    document.getElementById("explanation").innerText = data.explanation;
+    document.getElementById("audit").innerText = data.audit_note;
+
+    document.getElementById("output").style.display = "block";
+  }
+</script>
+
+</body>
+</html>
+
